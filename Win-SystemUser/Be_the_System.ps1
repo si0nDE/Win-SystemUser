@@ -14,9 +14,27 @@ function startbildschirm {
 }
 
 ### Erstelle temporäres Verzeichnis ###
-cd C:\
-mkdir temp
-cd C:\temp\
+function Create-TempDirectory {
+    cls
+    startbildschirm
+        Write-Host "    ╔═══════════════════════════════════════════════════════════════════════════════╗"
+        Write-Host "    ║ Temporäres Verzeichnis wird auf Laufwerk C:\ erstellt...                      ║"
+        Write-Host "    ║                                                                               ║"
+        Write-Host "    ╚═══════════════════════════════════════════════════════════════════════════════╝"
+        $error.Clear()
+        try {mkdir C:\temp\ | Out-Null}
+        catch{
+            Start-Sleep -Milliseconds 1500
+            Write-Host "        ╔═══════════════════════════════════════════════════════════════════════════════╗"
+            Write-Host "        ║ Das temporäre Verzeichnis konnte nicht erstellt werden.                       ║"
+            Write-Host "        ║                                                                               ║"
+            Write-Host "        ║     Bitte starten Sie dieses Script als Administrator erneut!                 ║"
+            Write-Host "        ║                                                                               ║"
+            Write-Host "        ╚═══════════════════════════════════════════════════════════════════════════════╝"
+            Start-Sleep -Milliseconds 3500
+            Error-Exit
+        }
+}
 
 ### Download der aktuellsten PsExec-Version ###
 wget http://download.sysinternals.com/files/PSTools.zip -OutFile PSTools.zip
