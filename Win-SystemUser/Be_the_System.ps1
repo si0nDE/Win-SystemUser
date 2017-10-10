@@ -37,7 +37,30 @@ function Create-TempDirectory {
 }
 
 ### Download der aktuellsten PsExec-Version ###
-wget http://download.sysinternals.com/files/PSTools.zip -OutFile PSTools.zip
+function Get-PsExec {
+    cls
+    startbildschirm
+        Write-Host "    ╔═══════════════════════════════════════════════════════════════════════════════╗"
+        Write-Host "    ║ PsExec wird bei Windows Sysinternals heruntergeladen...                       ║"
+        Write-Host "    ║                                                                               ║"
+        Write-Host "    ╚═══════════════════════════════════════════════════════════════════════════════╝"
+        $error.Clear()
+        try{Invoke-WebRequest -Uri https://download.sysinternals.com/files/PSTools.zip -OutFile "C:\temp\PSTools.zip"}
+        catch{
+            Start-Sleep -Milliseconds 1500
+            Write-Host "        ╔═══════════════════════════════════════════════════════════════════════════════╗"
+            Write-Host "        ║ PsExec konnte nicht heruntergeladen werden.                                   ║"
+            Write-Host "        ║                                                                               ║"
+            Write-Host "        ║     Bitte überprüfen Sie Ihre Internetverbindung und versuchen Sie es erneut! ║"
+            Write-Host "        ║                                                                               ║"
+            Write-Host "        ║     Sollten Sie kein Problem feststellen können, prüfen Sie bitte auf GitHub, ║"
+            Write-Host "        ║     ob dieses Script ein Update erhalten hat.                                 ║"
+            Write-Host "        ║                                                                               ║"
+            Write-Host "        ╚═══════════════════════════════════════════════════════════════════════════════╝"
+            Start-Sleep -Milliseconds 3500
+            Error-Exit
+        }
+}
 
 ### PsExec entpacken ###
 Add-Type -AssemblyName System.IO.Compression.FileSystem
