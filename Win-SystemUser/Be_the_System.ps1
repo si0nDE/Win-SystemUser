@@ -7,7 +7,7 @@ cls
 ### Startbildschirm ###
 function startbildschirm {
     Write-Host "╔═══════════════════════════════════════════════════════════════════════════════╗"
-    Write-Host "║ Be the system user for Windows v0.1.1                                         ║"
+    Write-Host "║ Be the system user for Windows v0.1.4                                         ║"
     Write-Host "║                                                                               ║"
     Write-Host "║                                                     (c) github.simonfieber.it ║"
     Write-Host "╚═══════════════════════════════════════════════════════════════════════════════╝"
@@ -63,8 +63,35 @@ function Get-PsExec {
 }
 
 ### PsExec entpacken ###
-Add-Type -AssemblyName System.IO.Compression.FileSystem
-[System.IO.Compression.ZipFile]::ExtractToDirectory("C:\temp\PSTools.zip", "C:\temp\")
+function Unzip-PsExec {
+    cls
+    startbildschirm
+        Write-Host "    ╔═══════════════════════════════════════════════════════════════════════════════╗"
+        Write-Host "    ║ PsExec wird entpackt...                                                       ║"
+        Write-Host "    ║                                                                               ║"
+        Write-Host "    ╚═══════════════════════════════════════════════════════════════════════════════╝"
+        $error.Clear()
+        try {
+            Add-Type -AssemblyName System.IO.Compression.FileSystem
+            [System.IO.Compression.ZipFile]::ExtractToDirectory("C:\temp\PSTools.zip", "C:\temp\")
+        } catch {
+            Start-Sleep -Milliseconds 1500
+            Remove-Item -Path C:\temp\PSTools.zip
+            Write-Host "        ╔═══════════════════════════════════════════════════════════════════════════════╗"
+            Write-Host "        ║ PsExec konnte nicht entpackt werden.                                          ║"
+            Write-Host "        ║                                                                               ║"
+            Write-Host "        ║     Bitte starten Sie dieses Script als Administrator erneut!                 ║"
+            Write-Host "        ║                                                                               ║"
+            Write-Host "        ╚═══════════════════════════════════════════════════════════════════════════════╝"
+            Start-Sleep -Milliseconds 3500
+            Error-Exit
+        }
+        Start-Sleep -Milliseconds 1000
+        Remove-Item -Path C:\temp\Ps*.exe -Exclude "PsExec64.exe"
+        Remove-Item -Path C:\temp\Pstools.chm
+        Remove-Item -Path C:\temp\PSTools.zip
+        Remove-Item -Path C:\temp\psversion.txt
+}
 
 Remove-Item -Path C:\temp\*.exe -Exclude "PsExec.exe", "PsExec64.exe"
 Remove-Item -Path C:\temp\*.chm
