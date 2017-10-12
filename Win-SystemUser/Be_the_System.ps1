@@ -7,7 +7,7 @@ cls
 ### Startbildschirm ###
 function startbildschirm {
     Write-Host "╔═══════════════════════════════════════════════════════════════════════════════╗"
-    Write-Host "║ Be the system user for Windows v0.1.5                                         ║"
+    Write-Host "║ Be the system user for Windows v0.1.6                                         ║"
     Write-Host "║                                                                               ║"
     Write-Host "║                                                     (c) github.simonfieber.it ║"
     Write-Host "╚═══════════════════════════════════════════════════════════════════════════════╝"
@@ -95,3 +95,11 @@ function Unzip-PsExec {
 
 ### Systemrechte abrufen ###
 Start-Process .\PsExec.exe -ArgumentList "-i -s -d cmd.exe /accepteula"
+function Error-Exit {
+        Write-Host "            ╔═══════════════════════════════════════════════════════════════════════════════╗"
+        Write-Host "            ║ Programm wird beendet...                                                      ║"
+        Write-Host "            ║                                                                               ║"
+        Write-Host "            ╚═══════════════════════════════════════════════════════════════════════════════╝"
+        Start-Sleep -Milliseconds 5000
+    [Environment]::Exit(1)
+}
