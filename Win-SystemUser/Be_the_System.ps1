@@ -7,7 +7,7 @@ cls
 ### Startbildschirm ###
 function startbildschirm {
     Write-Host "╔═══════════════════════════════════════════════════════════════════════════════╗"
-    Write-Host "║ Be the system user for Windows v0.1.4                                         ║"
+    Write-Host "║ Be the system user for Windows v0.1.5                                         ║"
     Write-Host "║                                                                               ║"
     Write-Host "║                                                     (c) github.simonfieber.it ║"
     Write-Host "╚═══════════════════════════════════════════════════════════════════════════════╝"
@@ -92,10 +92,6 @@ function Unzip-PsExec {
         Remove-Item -Path C:\temp\PSTools.zip
         Remove-Item -Path C:\temp\psversion.txt
 }
-
-Remove-Item -Path C:\temp\*.exe -Exclude "PsExec.exe", "PsExec64.exe"
-Remove-Item -Path C:\temp\*.chm
-Remove-Item -Path C:\temp\psversion.txt
 
 ### Systemrechte abrufen ###
 Start-Process .\PsExec.exe -ArgumentList "-i -s -d cmd.exe /accepteula"
