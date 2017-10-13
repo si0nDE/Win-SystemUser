@@ -7,7 +7,7 @@ cls
 ### Startbildschirm ###
 function startbildschirm {
     Write-Host "╔═══════════════════════════════════════════════════════════════════════════════╗"
-    Write-Host "║ Be the system user for Windows v0.1.6                                         ║"
+    Write-Host "║ Be the system user for Windows v0.1.7                                         ║"
     Write-Host "║                                                                               ║"
     Write-Host "║                                                     (c) github.simonfieber.it ║"
     Write-Host "╚═══════════════════════════════════════════════════════════════════════════════╝"
@@ -94,7 +94,27 @@ function Unzip-PsExec {
 }
 
 ### Systemrechte abrufen ###
-Start-Process .\PsExec.exe -ArgumentList "-i -s -d cmd.exe /accepteula"
+function Get-SystemUser {
+    cls
+    startbildschirm
+        Write-Host "    ╔═══════════════════════════════════════════════════════════════════════════════╗"
+        Write-Host "    ║ Eingabeaufforderung wird als Systembenutzer gestartet...                      ║"
+        Write-Host "    ║                                                                               ║"
+        Write-Host "    ╚═══════════════════════════════════════════════════════════════════════════════╝"
+        Start-Sleep -Milliseconds 1500
+        $error.Clear()
+        try {Start-Process C:\temp\PsExec64.exe -ArgumentList "-i -s -d cmd.exe /accepteula"}
+        catch {
+            Start-Sleep -Milliseconds 1500
+            Write-Host "        ╔═══════════════════════════════════════════════════════════════════════════════╗"
+            Write-Host "        ║ Ein unbekannter Fehler ist aufgetreten!                                       ║"
+            Write-Host "        ║                                                                               ║"
+            Write-Host "        ╚═══════════════════════════════════════════════════════════════════════════════╝"
+            Start-Sleep -Milliseconds 3500
+            Error-Exit
+        }
+}
+
 function Error-Exit {
         Write-Host "            ╔═══════════════════════════════════════════════════════════════════════════════╗"
         Write-Host "            ║ Programm wird beendet...                                                      ║"
