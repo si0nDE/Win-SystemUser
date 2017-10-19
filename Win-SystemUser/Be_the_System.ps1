@@ -7,11 +7,19 @@ cls
 ### Startbildschirm ###
 function startbildschirm {
     Write-Host "╔═══════════════════════════════════════════════════════════════════════════════╗"
-    Write-Host "║ Be the system user for Windows v0.1.7                                         ║"
+    Write-Host "║ Be the system user for Windows v0.2                                           ║"
     Write-Host "║                                                                               ║"
     Write-Host "║                                                     (c) github.simonfieber.it ║"
     Write-Host "╚═══════════════════════════════════════════════════════════════════════════════╝"
 }
+
+### Root-Verzeichnis ermitteln, zum öffnen des Programmcodes ###
+function Get-ScriptDirectory {
+    $Invocation = (Get-Variable MyInvocation -Scope 1).Value
+    Split-Path $Invocation.MyCommand.Path
+}
+
+$installpath = Get-ScriptDirectory
 
 ### Erstelle temporäres Verzeichnis ###
 function Create-TempDirectory {
@@ -122,4 +130,27 @@ function Error-Exit {
         Write-Host "            ╚═══════════════════════════════════════════════════════════════════════════════╝"
         Start-Sleep -Milliseconds 5000
     [Environment]::Exit(1)
+}
+
+### Start ###
+if($installpath -like "*\GitHub\Win-SystemUser\*") {
+    cls
+    startbildschirm
+        Start-Sleep -Milliseconds 500
+        Write-Host "    ╔═══════════════════════════════════════════════════════════════════════════════╗"
+        Write-Host "    ║ Dieses Script scheint in der Entwicklungsumgebung ausgeführt zu werden.       ║"
+        Write-Host "    ║                                                                               ║"
+        Write-Host "    ║     Programm wird beendet...                                                  ║"
+        Write-Host "    ║                                                                               ║"
+        Write-Host "    ╚═══════════════════════════════════════════════════════════════════════════════╝"
+        Start-Sleep -Milliseconds 5000
+} else {
+    Start-Sleep -Milliseconds  500
+    Create-TempDirectory
+    Start-Sleep -Milliseconds 1500
+    Get-PsExec
+    Start-Sleep -Milliseconds  500
+    Unzip-PsExec
+    Start-Sleep -Milliseconds 1500
+    Get-SystemUser
 }
