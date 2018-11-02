@@ -151,10 +151,10 @@ if($installpath -like "*\GitHub\Win-SystemUser\*") {
     startbildschirm
         Start-Sleep -Milliseconds 500
         Write-Host "    ╔══════════════════════════════════════════════════════════════════════════╗"
-        Write-Host "    ║ Das Update-Tool benötigt PowerShell-Version 3.0 oder höher.              ║"
+        Write-Host "    ║ Das Script benötigt zum Download PowerShell-Version 3.0 oder höher.      ║"
         Write-Host "    ║                                                                          ║"
-        Write-Host "    ║ Bitte aktualisieren Sie Ihre PowerShell-Umgebung oder laden Sie das      ║"
-        Write-Host "    ║ Update manuell von GitHub herunter: https://github.com/si0nDE/           ║"
+        Write-Host "    ║ Bitte aktualisieren Sie Ihre PowerShell-Umgebung oder laden Sie PsExec   ║"
+        Write-Host "    ║ Update manuell bei Windows Sysinternals herunter.                        ║"
         Write-Host "    ║                                                                          ║"
         Write-Host "    ║     Programm wird beendet...                                             ║"
         Write-Host "    ║                                                                          ║"
