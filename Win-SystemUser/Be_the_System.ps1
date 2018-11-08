@@ -115,6 +115,7 @@ function Get-SystemUser {
         Write-Host "   ╚═══════════════════════════════════════════════════════════════════════════╝"
         Start-Sleep -Milliseconds 1500
         $error.Clear()
+        try {
                 Start-Process $installpath\PsExec\PsExec64.exe -ArgumentList "-i -s -d cmd.exe /accepteula"
         }
         catch {
