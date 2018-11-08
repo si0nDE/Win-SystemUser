@@ -26,21 +26,24 @@ function Create-TempDirectory {
     cls
     startbildschirm
         Write-Host "   ╔═══════════════════════════════════════════════════════════════════════════╗"
-        Write-Host "   ║ Temporäres Verzeichnis wird auf Laufwerk C:\ erstellt...                  ║"
+        Write-Host "   ║ Installationsverzeichnis wird erstellt...                                 ║"
         Write-Host "   ║                                                                           ║"
         Write-Host "   ╚═══════════════════════════════════════════════════════════════════════════╝"
         $error.Clear()
-        try {mkdir C:\temp\ | Out-Null}
-        catch{
-            Start-Sleep -Milliseconds 1500
-            Write-Host "      ╔════════════════════════════════════════════════════════════════════════╗"
-            Write-Host "      ║ Das temporäre Verzeichnis konnte nicht erstellt werden.                ║"
-            Write-Host "      ║                                                                        ║"
-            Write-Host "      ║     Bitte starten Sie dieses Script als Administrator erneut!          ║"
-            Write-Host "      ║                                                                        ║"
-            Write-Host "      ╚════════════════════════════════════════════════════════════════════════╝"
-            Start-Sleep -Milliseconds 3500
-            Error-Exit
+        if(Test-Path -Path "$installpath\PsExec"){}
+        else {
+            try {mkdir $installpath\PsExec | Out-Null}
+            catch{
+                Start-Sleep -Milliseconds 1500
+                Write-Host "      ╔════════════════════════════════════════════════════════════════════════╗"
+                Write-Host "      ║ Das temporäre Verzeichnis konnte nicht erstellt werden.                ║"
+                Write-Host "      ║                                                                        ║"
+                Write-Host "      ║     Bitte starten Sie dieses Script als Administrator erneut!          ║"
+                Write-Host "      ║                                                                        ║"
+                Write-Host "      ╚════════════════════════════════════════════════════════════════════════╝"
+                Start-Sleep -Milliseconds 3500
+                Error-Exit
+            }
         }
 }
 
@@ -53,7 +56,7 @@ function Get-PsExec {
         Write-Host "   ║                                                                           ║"
         Write-Host "   ╚═══════════════════════════════════════════════════════════════════════════╝"
         $error.Clear()
-        try{Invoke-WebRequest -Uri https://download.sysinternals.com/files/PSTools.zip -OutFile "C:\temp\PSTools.zip"}
+        try{Invoke-WebRequest -Uri https://download.sysinternals.com/files/PSTools.zip -OutFile "$installpath\PsExec\PSTools.zip"}
         catch{
             Start-Sleep -Milliseconds 1500
             Write-Host "        ╔══════════════════════════════════════════════════════════════════════╗"
@@ -82,10 +85,10 @@ function Unzip-PsExec {
         $error.Clear()
         try {
             Add-Type -AssemblyName System.IO.Compression.FileSystem
-            [System.IO.Compression.ZipFile]::ExtractToDirectory("C:\temp\PSTools.zip", "C:\temp\")
+            [System.IO.Compression.ZipFile]::ExtractToDirectory("$installpath\PsExec\PSTools.zip", "$installpath\PsExec")
         } catch {
             Start-Sleep -Milliseconds 1500
-            Remove-Item -Path C:\temp\PSTools.zip
+            Remove-Item -Path $installpath\PsExec\PSTools.zip
             Write-Host "        ╔══════════════════════════════════════════════════════════════════════╗"
             Write-Host "        ║ PsExec konnte nicht entpackt werden.                                 ║"
             Write-Host "        ║                                                                      ║"
@@ -96,10 +99,10 @@ function Unzip-PsExec {
             Error-Exit
         }
         Start-Sleep -Milliseconds 1000
-        Remove-Item -Path C:\temp\Ps*.exe -Exclude "PsExec64.exe"
-        Remove-Item -Path C:\temp\Pstools.chm
-        Remove-Item -Path C:\temp\PSTools.zip
-        Remove-Item -Path C:\temp\psversion.txt
+            Remove-Item -Path $installpath\PsExec\Ps*.exe -Exclude "PsExec64.exe"
+        Remove-Item -Path $installpath\PsExec\Pstools.chm
+        Remove-Item -Path $installpath\PsExec\PSTools.zip
+        Remove-Item -Path $installpath\PsExec\psversion.txt
 }
 
 ### Systemrechte abrufen ###
@@ -112,7 +115,8 @@ function Get-SystemUser {
         Write-Host "   ╚═══════════════════════════════════════════════════════════════════════════╝"
         Start-Sleep -Milliseconds 1500
         $error.Clear()
-        try {Start-Process C:\temp\PsExec64.exe -ArgumentList "-i -s -d cmd.exe /accepteula"}
+                Start-Process $installpath\PsExec\PsExec64.exe -ArgumentList "-i -s -d cmd.exe /accepteula"
+        }
         catch {
             Start-Sleep -Milliseconds 1500
             Write-Host "        ╔══════════════════════════════════════════════════════════════════════╗"
