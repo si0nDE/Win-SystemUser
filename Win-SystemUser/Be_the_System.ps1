@@ -20,6 +20,7 @@ function Get-ScriptDirectory {
 }
 
 $installpath = Get-ScriptDirectory
+$systemtype = Get-WmiObject -Class Win32_ComputerSystem -ComputerName . | Select-Object -Property SystemType
 
 ### Erstelle temporäres Verzeichnis ###
 function Create-TempDirectory {
@@ -99,7 +100,11 @@ function Unzip-PsExec {
             Error-Exit
         }
         Start-Sleep -Milliseconds 1000
+        if($systemtype -match "x64*") {
             Remove-Item -Path $installpath\PsExec\Ps*.exe -Exclude "PsExec64.exe"
+        } else {
+            Remove-Item -Path $installpath\PsExec\Ps*.exe -Exclude "PsExec.exe"
+        }
         Remove-Item -Path $installpath\PsExec\Pstools.chm
         Remove-Item -Path $installpath\PsExec\PSTools.zip
         Remove-Item -Path $installpath\PsExec\psversion.txt
@@ -116,7 +121,11 @@ function Get-SystemUser {
         Start-Sleep -Milliseconds 1500
         $error.Clear()
         try {
+            if($systemtype -match "x64*") {
                 Start-Process $installpath\PsExec\PsExec64.exe -ArgumentList "-i -s -d cmd.exe /accepteula"
+            } else {
+                Start-Process $installpath\PsExec\PsExec.exe -ArgumentList "-i -s -d cmd.exe /accepteula"
+            }
         }
         catch {
             Start-Sleep -Milliseconds 1500
