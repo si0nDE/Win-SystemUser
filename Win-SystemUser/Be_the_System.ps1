@@ -3,6 +3,9 @@
     ###     Visit:  simonfieber.it     ###
 
 cls
+### Fehlermeldungen unterdrücken ###
+### Mögliche Fehlermeldungen: Dateien oder Ordner können nicht gelöscht werden, da diese nicht existieren. ###
+$ErrorActionPreference = "SilentlyContinue"
 
 ### Startbildschirm ###
 function startbildschirm {
@@ -20,10 +23,11 @@ function Get-ScriptDirectory {
 }
 
 $installpath = Get-ScriptDirectory
+$gci_installpath = Get-ChildItem $installpath
 $systemtype = Get-WmiObject -Class Win32_ComputerSystem -ComputerName . | Select-Object -Property SystemType
 
-### Erstelle temporäres Verzeichnis ###
-function Create-TempDirectory {
+### Erstelle Installationsverzeichnis ###
+function Create-InstallDirectory {
     cls
     startbildschirm
         Write-Host "   ╔═══════════════════════════════════════════════════════════════════════════╗"
@@ -110,8 +114,27 @@ function Unzip-PsExec {
         Remove-Item -Path $installpath\PsExec\psversion.txt
 }
 
-### Systemrechte abrufen ###
+### Menü: Systemrechte abrufen ###
 function Get-SystemUser {
+    cls
+    startbildschirm
+        Write-Host "   ╔═══════════════════════════════════════════════════════════════════════════╗"
+        Write-Host "   ║ Welches Programm möchten Sie mit Systemrechten starten?                   ║"
+        Write-Host "   ║                                                                           ║"
+        Write-Host "   ║ [ 1 ] Command Prompt (cmd.exe)     ║ [ 2 ] PowerShell (powershell.exe)    ║"
+        Write-Host "   ║                                    ║                                      ║"
+        Write-Host "   ╚════════════════════════════════════╩══════════════════════════════════════╝"
+        Write-Host ""
+        $input = Read-Host "Bitte wählen Sie"
+
+        switch ($input) {
+            '1' {Get-CMD-SystemUser}
+            '2' {Get-PS-SystemUser}
+        }
+}
+
+### Systemrechte mit CMD abrufen ###
+function Get-CMD-SystemUser {
     cls
     startbildschirm
         Write-Host "   ╔═══════════════════════════════════════════════════════════════════════════╗"
@@ -135,6 +158,55 @@ function Get-SystemUser {
             Write-Host "        ╚══════════════════════════════════════════════════════════════════════╝"
             Start-Sleep -Milliseconds 3500
             Error-Exit
+        }
+}
+
+### Systemrechte mit PS abrufen ###
+function Get-PS-SystemUser {
+    cls
+    startbildschirm
+        Write-Host "   ╔═══════════════════════════════════════════════════════════════════════════╗"
+        Write-Host "   ║ PowerShell wird als Systembenutzer gestartet...                           ║"
+        Write-Host "   ║                                                                           ║"
+        Write-Host "   ╚═══════════════════════════════════════════════════════════════════════════╝"
+        Start-Sleep -Milliseconds 1500
+        $error.Clear()
+        try {
+            if($systemtype -match "x64*") {
+                Start-Process $installpath\PsExec\PsExec64.exe -ArgumentList "-i -s -d powershell.exe /accepteula"
+            } else {
+                Start-Process $installpath\PsExec\PsExec.exe -ArgumentList "-i -s -d powershell.exe /accepteula"
+            }
+        catch {
+            Start-Sleep -Milliseconds 1500
+            Write-Host "        ╔══════════════════════════════════════════════════════════════════════╗"
+            Write-Host "        ║ Ein unbekannter Fehler ist aufgetreten!                              ║"
+            Write-Host "        ║                                                                      ║"
+            Write-Host "        ╚══════════════════════════════════════════════════════════════════════╝"
+            Start-Sleep -Milliseconds 3500
+            Error-Exit
+        }
+}
+
+### Starte Script und suche PsExec ###
+function Start-PsExec {
+    cls
+    startbildschirm
+        Write-Host "   ╔═══════════════════════════════════════════════════════════════════════════╗"
+        Write-Host "   ║ PsExec wird gesucht...                                                    ║"
+        Write-Host "   ║                                                                           ║"
+        Write-Host "   ╚═══════════════════════════════════════════════════════════════════════════╝"
+        $error.Clear()
+        Start-Sleep -Milliseconds 500
+        if($gci_installpath -match "PsExec*"){Get-SystemUser}
+        else{
+            Create-InstallDirectory
+            Start-Sleep -Milliseconds 1500
+            Get-PsExec
+            Start-Sleep -Milliseconds  500
+            Unzip-PsExec
+            Start-Sleep -Milliseconds 1500
+            Get-SystemUser
         }
 }
 
@@ -176,12 +248,5 @@ if($installpath -like "*\GitHub\Win-SystemUser\*") {
         Start-Sleep -Milliseconds 5000
         [Environment]::Exit(1)
 } else {
-    Start-Sleep -Milliseconds  500
-    Create-TempDirectory
-    Start-Sleep -Milliseconds 1500
-    Get-PsExec
-    Start-Sleep -Milliseconds  500
-    Unzip-PsExec
-    Start-Sleep -Milliseconds 1500
-    Get-SystemUser
+    Start-PsExec
 }
