@@ -177,7 +177,7 @@ function Get-PS-SystemUser {
             } else {
                 Start-Process $installpath\PsExec\PsExec.exe -ArgumentList "-i -s -d powershell.exe /accepteula"
             }
-        catch {
+        } catch {
             Start-Sleep -Milliseconds 1500
             Write-Host "        ╔══════════════════════════════════════════════════════════════════════╗"
             Write-Host "        ║ Ein unbekannter Fehler ist aufgetreten!                              ║"
