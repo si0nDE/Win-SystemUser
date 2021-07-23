@@ -11,7 +11,7 @@ $ErrorActionPreference = "SilentlyContinue"
 ### Startbildschirm ###
 function startbildschirm {
     Write-Host "╔══════════════════════════════════════════════════════════════════════════════╗"
-    Write-Host "║ Win-SystemUser v1.2                                                          ║"
+    Write-Host "║ Win-SystemUser v1.3                                                          ║"
     Write-Host "║                                                                              ║"
     Write-Host "║                                                       (c) www.simonfieber.it ║"
     Write-Host "╚══════════════════════════════════════════════════════════════════════════════╝"
@@ -160,9 +160,11 @@ function Get-CMD-SystemUser {
         $error.Clear()
         try {
             if($systemtype -match "x64*") {
-                Start-Process $installpath\PsExec\PsExec64.exe -ArgumentList "-i -s -d cmd.exe /accepteula"
+                Start-Process $installpath\PsExec\PsExec64.exe -ArgumentList "\\localhost -i -s -accepteula cmd.exe"
+                Start-PsExec
             } else {
-                Start-Process $installpath\PsExec\PsExec.exe -ArgumentList "-i -s -d cmd.exe /accepteula"
+                Start-Process $installpath\PsExec\PsExec.exe -ArgumentList "\\localhost -i -s -accepteula cmd.exe"
+                Start-PsExec
             }
         }
         catch {
@@ -189,9 +191,11 @@ function Get-PS-SystemUser {
         $error.Clear()
         try {
             if($systemtype -match "x64*") {
-                Start-Process $installpath\PsExec\PsExec64.exe -ArgumentList "-i -s -d powershell.exe /accepteula"
+                Start-Process $installpath\PsExec\PsExec64.exe -ArgumentList "\\localhost -i -s -accepteula powershell.exe"
+                Start-PsExec
             } else {
-                Start-Process $installpath\PsExec\PsExec.exe -ArgumentList "-i -s -d powershell.exe /accepteula"
+                Start-Process $installpath\PsExec\PsExec.exe -ArgumentList "\\localhost -i -s -accepteula powershell.exe"
+                Start-PsExec
             }
         } catch {
             Start-Sleep -Milliseconds 1500
