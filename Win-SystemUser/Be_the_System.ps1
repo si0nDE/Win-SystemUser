@@ -11,7 +11,7 @@ $ErrorActionPreference = "SilentlyContinue"
 ### Startbildschirm ###
 function startbildschirm {
     Write-Host "╔══════════════════════════════════════════════════════════════════════════════╗"
-    Write-Host "║ Win-SystemUser v1.3                                                          ║"
+    Write-Host "║ Win-SystemUser v1.4                                                          ║"
     Write-Host "║                                                                              ║"
     Write-Host "║                                                       (c) www.simonfieber.it ║"
     Write-Host "╚══════════════════════════════════════════════════════════════════════════════╝"
@@ -133,7 +133,7 @@ function Get-SystemUser {
         Write-Host "   ║                                    ║                                      ║"
         Write-Host "   ╠════════════════════════════════════╩══════════════════════════════════════╣"
         Write-Host "   ║                                                                           ║"
-        Write-Host "   ║ [ X ] Zurück zum WSI-Tool                                                 ║"
+        Write-Host "   ║ [ X ] Programm beenden                                                    ║"
         Write-Host "   ╚═══════════════════════════════════════════════════════════════════════════╝"
         Write-Host ""
         $input = Read-Host "Bitte wählen Sie"
@@ -141,8 +141,8 @@ function Get-SystemUser {
         switch ($input) {
             '1' {Get-CMD-SystemUser}
             '2' {Get-PS-SystemUser}
-            '0' {exit}
-            'x' {exit}
+            '0' {Exit-Script}
+            'x' {Exit-Script}
         } pause }
     until ($input -eq 'x')
 }
@@ -239,6 +239,44 @@ function Error-Exit {
         Write-Host "            ╚══════════════════════════════════════════════════════════════════════╝"
         Start-Sleep -Milliseconds 5000
     [Environment]::Exit(1)
+}
+
+
+function Exit-Script {
+    if (Test-Path "$installpath\tool_server.ps1") {
+        Clear-Host
+        startbildschirm
+            Write-Host "   ╔═══════════════════════════════════════════════════════════════════════════╗"
+            Write-Host "   ║ Windows Server Installtool                                                ║"
+            Write-Host "   ╠═══════════════════════════════                                            ║"
+            Write-Host "   ║                                                                           ║"
+            Write-Host "   ║ Das Programm wird gewechselt...                                           ║"
+            Write-Host "   ║                                                                           ║"
+            Write-Host "   ╚═══════════════════════════════════════════════════════════════════════════╝"
+            Start-Sleep -Milliseconds 1500
+            $identity = [System.Security.Principal.WindowsIdentity]::GetCurrent()
+            $princ = New-Object System.Security.Principal.WindowsPrincipal($identity)
+            if(!$princ.IsInRole( `
+                [System.Security.Principal.WindowsBuiltInRole]::Administrator))
+                {
+                    $powershell = [System.Diagnostics.Process]::GetCurrentProcess()
+                    $psi = New-Object System.Diagnostics.ProcessStartInfo $powerShell.Path
+                    $script = "$installpath\tool_server.ps1"
+                    $prm = $script
+                        foreach($a in $args) {
+                            $prm += ' ' + $a
+                        }
+                    $psi.Arguments = $prm
+                    $psi.Verb = "runas"
+                    [System.Diagnostics.Process]::Start($psi) | Out-Null
+                    return;
+                }
+        ### Falls Adminrechte nicht erfordert werden können, ###
+        ### soll das Script trotzdem ausgeführt werden.      ###
+        & "$installpath\tool_server.ps1"
+    } else {
+        [Environment]::Exit(1)
+    }
 }
 
 
