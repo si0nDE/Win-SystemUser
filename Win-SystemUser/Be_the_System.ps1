@@ -11,7 +11,7 @@ $ErrorActionPreference = "SilentlyContinue"
 ### Startbildschirm ###
 function startbildschirm {
     Write-Host "╔══════════════════════════════════════════════════════════════════════════════╗"
-    Write-Host "║ Win-SystemUser v1.4                                                          ║"
+    Write-Host "║ Win-SystemUser v1.4.1                                                        ║"
     Write-Host "║                                                                              ║"
     Write-Host "║                                                       (c) www.simonfieber.it ║"
     Write-Host "╚══════════════════════════════════════════════════════════════════════════════╝"
@@ -161,10 +161,10 @@ function Get-CMD-SystemUser {
         try {
             if($systemtype -match "x64*") {
                 Start-Process $installpath\PsExec\PsExec64.exe -ArgumentList "\\localhost -i -s -accepteula cmd.exe"
-                Start-PsExec
+                Exit-Script
             } else {
                 Start-Process $installpath\PsExec\PsExec.exe -ArgumentList "\\localhost -i -s -accepteula cmd.exe"
-                Start-PsExec
+                Exit-Script
             }
         }
         catch {
@@ -192,10 +192,10 @@ function Get-PS-SystemUser {
         try {
             if($systemtype -match "x64*") {
                 Start-Process $installpath\PsExec\PsExec64.exe -ArgumentList "\\localhost -i -s -accepteula powershell.exe"
-                Start-PsExec
+                Get-SystemUser
             } else {
                 Start-Process $installpath\PsExec\PsExec.exe -ArgumentList "\\localhost -i -s -accepteula powershell.exe"
-                Start-PsExec
+                Get-SystemUser
             }
         } catch {
             Start-Sleep -Milliseconds 1500
@@ -238,7 +238,7 @@ function Error-Exit {
         Write-Host "            ║                                                                      ║"
         Write-Host "            ╚══════════════════════════════════════════════════════════════════════╝"
         Start-Sleep -Milliseconds 5000
-    [Environment]::Exit(1)
+    Exit-Script
 }
 
 
