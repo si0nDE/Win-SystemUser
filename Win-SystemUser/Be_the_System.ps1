@@ -7,14 +7,16 @@ cls
 ### Mögliche Fehlermeldungen: Dateien oder Ordner können nicht gelöscht werden, da diese nicht existieren. ###
 $ErrorActionPreference = "SilentlyContinue"
 
+
 ### Startbildschirm ###
 function startbildschirm {
     Write-Host "╔══════════════════════════════════════════════════════════════════════════════╗"
-    Write-Host "║ Be the system user for Windows                                               ║"
+    Write-Host "║ Win-SystemUser v1.2                                                          ║"
     Write-Host "║                                                                              ║"
     Write-Host "║                                                       (c) www.simonfieber.it ║"
     Write-Host "╚══════════════════════════════════════════════════════════════════════════════╝"
 }
+
 
 ### Root-Verzeichnis ermitteln, zum öffnen des Programmcodes ###
 function Get-ScriptDirectory {
@@ -22,9 +24,11 @@ function Get-ScriptDirectory {
     Split-Path $Invocation.MyCommand.Path
 }
 
+
 $installpath = Get-ScriptDirectory
 $gci_installpath = Get-ChildItem $installpath
 $systemtype = Get-WmiObject -Class Win32_ComputerSystem -ComputerName . | Select-Object -Property SystemType
+
 
 ### Erstelle Installationsverzeichnis ###
 function Create-InstallDirectory {
@@ -52,6 +56,7 @@ function Create-InstallDirectory {
         }
 }
 
+
 ### Download der aktuellsten PsExec-Version ###
 function Get-PsExec {
     cls
@@ -78,6 +83,7 @@ function Get-PsExec {
             Error-Exit
         }
 }
+
 
 ### PsExec entpacken ###
 function Unzip-PsExec {
@@ -114,8 +120,10 @@ function Unzip-PsExec {
         Remove-Item -Path $installpath\PsExec\psversion.txt
 }
 
+
 ### Menü: Systemrechte abrufen ###
 function Get-SystemUser {
+    do {
     cls
     startbildschirm
         Write-Host "   ╔═══════════════════════════════════════════════════════════════════════════╗"
@@ -123,15 +131,22 @@ function Get-SystemUser {
         Write-Host "   ║                                                                           ║"
         Write-Host "   ║ [ 1 ] Command Prompt (cmd.exe)     ║ [ 2 ] PowerShell (powershell.exe)    ║"
         Write-Host "   ║                                    ║                                      ║"
-        Write-Host "   ╚════════════════════════════════════╩══════════════════════════════════════╝"
+        Write-Host "   ╠════════════════════════════════════╩══════════════════════════════════════╣"
+        Write-Host "   ║                                                                           ║"
+        Write-Host "   ║ [ X ] Zurück zum WSI-Tool                                                 ║"
+        Write-Host "   ╚═══════════════════════════════════════════════════════════════════════════╝"
         Write-Host ""
         $input = Read-Host "Bitte wählen Sie"
 
         switch ($input) {
             '1' {Get-CMD-SystemUser}
             '2' {Get-PS-SystemUser}
-        }
+            '0' {exit}
+            'x' {exit}
+        } pause }
+    until ($input -eq 'x')
 }
+
 
 ### Systemrechte mit CMD abrufen ###
 function Get-CMD-SystemUser {
@@ -161,6 +176,7 @@ function Get-CMD-SystemUser {
         }
 }
 
+
 ### Systemrechte mit PS abrufen ###
 function Get-PS-SystemUser {
     cls
@@ -188,6 +204,7 @@ function Get-PS-SystemUser {
         }
 }
 
+
 ### Starte Script und suche PsExec ###
 function Start-PsExec {
     cls
@@ -210,6 +227,7 @@ function Start-PsExec {
         }
 }
 
+
 function Error-Exit {
         Write-Host "            ╔══════════════════════════════════════════════════════════════════════╗"
         Write-Host "            ║ Programm wird beendet...                                             ║"
@@ -218,6 +236,7 @@ function Error-Exit {
         Start-Sleep -Milliseconds 5000
     [Environment]::Exit(1)
 }
+
 
 ### Start ###
 if($installpath -like "*\GitHub\Win-SystemUser\*") {
